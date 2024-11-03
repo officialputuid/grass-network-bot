@@ -35,8 +35,10 @@ Grass network bot is a simple tool designed to automate the interaction to Grass
 	- Login to your grass account in https://app.getgrass.io/dashboard, make sure you is in this link before go to next step
 	- Go to inspect element, press F12 or right-click then pick inspect element in your browser
 	- Go to application tab - look for Local Storage in storage list -> click `https://app.getgrass.io` and you will see your UserId.
-	or you can go Console tab and paste this `localStorage.getItem('userId');` 
-
+	or you can go Console tab and paste this 
+	```bash
+	localStorage.getItem('userId');`
+ 	```
 3. Run the script:
 	```bash
 	node index.js
