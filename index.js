@@ -8,6 +8,9 @@ const WEBSOCKET_URL = 'wss://proxy.wynd.network:4444';
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36';
 const PING_INTERVAL = 30000;
 
+let websocket;
+let isFirstRun = true;
+
 function fetchPublicIP(callback) {
   https.get('https://api.ipify.org?format=json', (res) => {
     let data = '';
@@ -18,7 +21,6 @@ function fetchPublicIP(callback) {
     });
   }).on('error', (err) => {
     console.error(`Error fetching public IP: ${err.message}`.red);
-	startProcess();
   });
 }
 
@@ -35,11 +37,16 @@ function displayIntro() {
   console.log('\n');
 }
 
-async function initiateWebSocketConnection(userID) {
+function initiateWebSocketConnection(userID) {
   fetchPublicIP((publicIP) => {
     console.log(centerText(`Your Public IP Address: ${publicIP}`).green);
+
+    if (websocket) {
+      websocket.close();
+    }
+
     try {
-      const websocket = new WebSocket(WEBSOCKET_URL, {
+      websocket = new WebSocket(WEBSOCKET_URL, {
         headers: {
           'User-Agent': USER_AGENT,
           pragma: 'no-cache',
@@ -129,7 +136,10 @@ function startProcess() {
     }
 
     const userID = data.trim();
-    displayIntro();
+    if (isFirstRun) {
+      displayIntro();
+      isFirstRun = false;
+    }
     initiateWebSocketConnection(userID);
   });
 }
