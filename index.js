@@ -21,6 +21,7 @@ function fetchPublicIP(callback) {
     });
   }).on('error', (err) => {
     console.error(`Error fetching public IP: ${err.message}`.red);
+	startProcess();
   });
 }
 
@@ -77,6 +78,7 @@ function initiateWebSocketConnection(userID) {
         console.log(`WebSocket closed with code: ${code}, reason: ${reason}`.yellow);
         if (reason === "nggyu") {
           console.error(centerText(`Might be because too many auth attempts. Try again later.`).red);
+		  startProcess();
         }
         console.log(`Restarting the connection...`.cyan);
         startProcess();
