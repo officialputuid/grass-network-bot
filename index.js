@@ -118,7 +118,8 @@ class BotInstance {
           wsClient.send(JSON.stringify(authResponse));
           console.log(`Trying to send authentication for userID: ${authResponse.result.user_id.yellow}`.white);
         } else if (message.action === 'PONG') {
-          console.log(`Received PONG for UserID: ${userID}, Used ${this.totalDataUsage[userID]} bytes total packet data`.cyan);
+          const totalDataUsageKB = (this.totalDataUsage[userID] / 1024).toFixed(2);
+		  console.log(`Received PONG for UserID: ${userID.green}, Used ${totalDataUsageKB.yellow} KB total packet data`.cyan);
         }
       });
       wsClient.on('close', (code, reason) => {
