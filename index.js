@@ -69,7 +69,9 @@ function showHeader() {
 class BotInstance {
   constructor(configuration) {
     this.configuration = configuration;
+    this.totalDataUsage = {};
   }
+
   async proxyConnect(proxy, userID) {
     try {
       const formattedProxy = proxy.startsWith('socks5://')
@@ -94,6 +96,12 @@ class BotInstance {
       });
       wsClient.on('message', (msg) => {
         const message = JSON.parse(msg);
+        const dataUsage = msg.length;
+        if (!this.totalDataUsage[userID]) {
+          this.totalDataUsage[userID] = 0;
+        }
+        this.totalDataUsage[userID] += dataUsage;
+        
         if (message.action === 'AUTH') {
           const authResponse = {
             id: message.id,
@@ -110,7 +118,7 @@ class BotInstance {
           wsClient.send(JSON.stringify(authResponse));
           console.log(`Trying to send authentication for userID: ${authResponse.result.user_id.yellow}`.white);
         } else if (message.action === 'PONG') {
-          console.log(`Received PONG for UserID: ${userID}`.cyan);
+          console.log(`Received PONG for UserID: ${userID}, Used ${this.totalDataUsage[userID]} bytes total packet data`.cyan);
         }
       });
       wsClient.on('close', (code, reason) => {
@@ -126,6 +134,7 @@ class BotInstance {
       console.error(`Proxy: ${error.message}`.red);
     }
   }
+
   async directConnect(userID) {
     try {
       const wsURL = `wss://${this.configuration.websocketHost}`;
@@ -136,27 +145,34 @@ class BotInstance {
         console.log(`Connect directly Without Proxy/Local network`.white);
         this.sendPing(wsClient, 'Direct IP');
       });
-      wsClient.on('message', (msg) => {
-        const message = JSON.parse(msg);
-        if (message.action === 'AUTH') {
-          const authResponse = {
-            id: message.id,
-            origin_action: 'AUTH',
-            result: {
-              browser_id: generateUUID(),
-              user_id: userID,
-              user_agent: 'Mozilla/5.0',
-              timestamp: Math.floor(Date.now() / 1000),
-              device_type: 'desktop',
-              version: '4.28.2',
-            },
-          };
-          wsClient.send(JSON.stringify(authResponse));
-          console.log(`Trying to send authentication for userID: ${authResponse.result.user_id.yellow}`.white);
-        } else if (message.action === 'PONG') {
-          console.log(`Received PONG for UserID: ${userID}`.cyan);
-        }
-      });
+		wsClient.on('message', (msg) => {
+		const message = JSON.parse(msg);
+		const dataUsage = msg.length;
+		if (!this.totalDataUsage[userID]) {
+		this.totalDataUsage[userID] = 0;
+		}
+		this.totalDataUsage[userID] += dataUsage;
+	
+		if (message.action === 'AUTH') {
+			const authResponse = {
+			id: message.id,
+			origin_action: 'AUTH',
+			result: {
+				browser_id: generateUUID(),
+				user_id: userID,
+				user_agent: 'Mozilla/5.0',
+				timestamp: Math.floor(Date.now() / 1000),
+				device_type: 'desktop',
+				version: '4.28.2',
+			},
+			};
+			wsClient.send(JSON.stringify(authResponse));
+			console.log(`Trying to send authentication for userID: ${authResponse.result.user_id.yellow}`.white);
+		} else if (message.action === 'PONG') {
+			const totalDataUsageKB = (this.totalDataUsage[userID] / 1024).toFixed(2);
+			console.log(`Received PONG for UserID: ${userID.green}, Used ${totalDataUsageKB.yellow} KB total packet data`.cyan);
+		}
+		});
       wsClient.on('close', (code, reason) => {
         console.log(`WebSocket closed, error ${code} ${reason}`.red);
         setTimeout(() => this.directConnect(userID), this.configuration.retryInterval);
@@ -169,6 +185,7 @@ class BotInstance {
       console.error(`Failed to connect directly: ${error.message}`.red);
     }
   }
+
   sendPing(wsClient, proxyIP) {
     setInterval(() => {
       const pingMsg = {
@@ -181,6 +198,7 @@ class BotInstance {
       console.log(`Send PING from ${proxyIP}`.green);
     }, 26000);
   }
+
   defaultHeaders() {
     return {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0',
