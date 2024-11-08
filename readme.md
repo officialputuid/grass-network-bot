@@ -30,6 +30,7 @@ Grass network bot is a simple tool designed to automate the interaction to Grass
 2. Modify the `userid.txt` file, put your userid in the text file, example below:
 	```
 	2oLV5yxxxxxxxxxxxxxxxxxx
+ 	2i2Insxxxxxxxxxxxxxxxxxx
 	```
 	To get your userid, follow this step:
 	- Login to your grass account in https://app.getgrass.io/dashboard, make sure you is in this link before go to next step
@@ -43,7 +44,21 @@ Grass network bot is a simple tool designed to automate the interaction to Grass
 	```bash
 	node index.js
 	```
-
+4. Select if you want to use proxy or not in script with arrow keys, it will look like this
+	```
+ 	? Do you want to use or run with proxy? (Use arrow keys)
+	❯ Use Proxy
+	  Without Proxy/Local network
+ 	```
+5. If you want to use proxy, edit the `proxy.txt` with your proxy.
+	```
+ 	ip:port
+	username:password@ip:port
+	http://ip:port
+	http://username:password@ip:port
+	socks5://ip:port
+	socks5://username:password@ip:port
+ 	```
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
