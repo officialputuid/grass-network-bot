@@ -40,17 +40,7 @@ Grass network bot is a simple tool designed to automate the interaction to Grass
 	```bash
 	localStorage.getItem('userId');
  	```
-3. Run the script:
-	```bash
-	node index.js
-	```
-4. Select if you want to use proxy or not in script with arrow keys, it will look like this
-	```
- 	? Do you want to use or run with proxy? (Use arrow keys)
-	❯ Use Proxy
-	  Without Proxy/Local network
- 	```
-5. If you want to use proxy, edit the `proxy.txt` with your proxy.
+3. If you want to use proxy, edit the `proxy.txt` with your proxy.
 	```
  	ip:port
 	username:password@ip:port
@@ -58,6 +48,16 @@ Grass network bot is a simple tool designed to automate the interaction to Grass
 	http://username:password@ip:port
 	socks5://ip:port
 	socks5://username:password@ip:port
+ 	```
+4. Run the script:
+	```bash
+	node index.js
+	```
+5. When running the script, select the menu if you want to use proxy or not with arrow keys, it will look like this
+	```
+ 	? Do you want to use or run with proxy? (Use arrow keys)
+	❯ Use Proxy
+	  Without Proxy/Local network
  	```
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
