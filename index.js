@@ -14,6 +14,8 @@ console.error = function () {};
   await wait(1000);
   const configuration = new Configuration();
   const botInstance = new BotInstance(configuration);
+
+/*
   const { proxyChoice } = await promptUser.prompt([
     {
       type: 'list',
@@ -32,6 +34,18 @@ console.error = function () {};
     console.log(`Processing with ${proxyList.length} proxies, trying to filter the proxy and only connect with active proxy...`.cyan);
   } else {
     console.log('Connecting directly Without Proxy/Local network.'.cyan);
+  }
+*/
+
+  const proxyChoice = 'Use Proxy';
+  let proxyList = [];
+  if (proxyChoice === 'Use Proxy') {
+    proxyList = await loadLines('proxy.txt');
+    if (proxyList.length === 0) {
+      console.error('Proxies not found...'.red);
+      return;
+    }
+    console.log(`Processing with ${proxyList.length} proxies, trying to filter the proxy and only connect with active proxy...`.cyan);
   }
   const userIDList = await loadLines('userid.txt');
   if (userIDList.length === 0) {
@@ -116,10 +130,10 @@ class BotInstance {
             },
           };
           wsClient.send(JSON.stringify(authResponse));
-          console.log(`Trying to send authentication for userID: ${authResponse.result.user_id.yellow}`.white);
+          console.log(`Trying to send authentication for userID: ${authResponse.result.user_id.substring(0, 4).yellow}*`.white);
         } else if (message.action === 'PONG') {
           const totalDataUsageKB = (this.totalDataUsage[userID] / 1024).toFixed(2);
-		  console.log(`Received PONG for UserID: ${userID.green}, Used ${totalDataUsageKB.yellow} KB total packet data`.cyan);
+		  console.log(`Received PONG for UserID: ${userID.substring(0, 4).green}*, Used ${totalDataUsageKB.yellow} KB total packet data`.cyan);
         }
       });
       wsClient.on('close', (code, reason) => {
@@ -168,10 +182,10 @@ class BotInstance {
 			},
 			};
 			wsClient.send(JSON.stringify(authResponse));
-			console.log(`Trying to send authentication for userID: ${authResponse.result.user_id.yellow}`.white);
+			console.log(`Trying to send authentication for userID: ${authResponse.result.user_id.substring(0, 4).yellow}*`.white);
 		} else if (message.action === 'PONG') {
 			const totalDataUsageKB = (this.totalDataUsage[userID] / 1024).toFixed(2);
-			console.log(`Received PONG for UserID: ${userID.green}, Used ${totalDataUsageKB.yellow} KB total packet data`.cyan);
+			console.log(`Received PONG for UserID: ${userID.substring(0, 4).green}*, Used ${totalDataUsageKB.yellow} KB total packet data`.cyan);
 		}
 		});
       wsClient.on('close', (code, reason) => {
