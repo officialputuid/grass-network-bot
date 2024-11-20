@@ -244,7 +244,8 @@ class BotInstance {
 class Configuration {
   constructor() {
     this.ipCheckURL = 'https://ipinfo.io/json';
-    this.websocketHost = 'proxy.wynd.network:4444';
+    this.wssList = ['proxy2.wynd.network:4444', 'proxy2.wynd.network:4650'];
+    this.websocketHost = this.wssList[Math.floor(Math.random() * this.wssList.length)];
     this.retryInterval = 20000;
   }
 }
