@@ -126,7 +126,7 @@ class BotInstance {
               user_agent: 'Mozilla/5.0',
               timestamp: Math.floor(Date.now() / 1000),
               device_type: 'desktop',
-              version: '4.28.2',
+              version: '4.29.0',
             },
           };
           wsClient.send(JSON.stringify(authResponse));
@@ -178,7 +178,7 @@ class BotInstance {
 				user_agent: 'Mozilla/5.0',
 				timestamp: Math.floor(Date.now() / 1000),
 				device_type: 'desktop',
-				version: '4.28.2',
+				version: '4.29.0',
 			},
 			};
 			wsClient.send(JSON.stringify(authResponse));
