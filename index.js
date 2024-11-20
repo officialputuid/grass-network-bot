@@ -105,8 +105,12 @@ class BotInstance {
       });
       wsClient.on('open', () => {
         console.log(`Connected to ${proxy}`.blue);
-        console.log(`Proxy IP: ${proxyDetails.ip.yellow}, Region: ${proxyDetails.region} ${proxyDetails.country}`.white);
-        this.sendPing(wsClient, proxyDetails.ip);
+        if (proxyDetails && proxyDetails.ip && proxyDetails.region && proxyDetails.country) {
+          console.log(`Proxy IP: ${proxyDetails.ip.yellow}, Region: ${proxyDetails.region} ${proxyDetails.country}`.white);
+        } else {
+          console.log('Proxy details are missing or incomplete.'.red);
+        }
+        this.sendPing(wsClient, proxyDetails ? proxyDetails.ip : 'Unknown IP');
       });
       wsClient.on('message', (msg) => {
         const message = JSON.parse(msg);
